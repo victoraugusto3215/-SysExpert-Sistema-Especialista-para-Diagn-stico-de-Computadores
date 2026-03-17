@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SysExpert — Diagnóstico de Computador</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="app">
+
+    <!-- ═══ HEADER ═══ -->
+    <header>
+      <div class="logo">
+        <div class="logo-icon">🧠</div>
+        <div>
+          <h1>Sys<span>Expert</span></h1>
+          <small>Sistema Especialista — Inteligência Artificial</small>
+        </div>
+      </div>
+      <nav class="nav-tabs">
+        <button class="nav-tab active" data-page="diagnostico">🔍 Diagnóstico</button>
+        <button class="nav-tab" data-page="explicacao">💡 Explicação</button>
+        <button class="nav-tab" data-page="fatos">📋 Fatos</button>
+        <button class="nav-tab" data-page="regras">⚙️ Regras</button>
+      </nav>
+    </header>
+
+    <!-- ═══ BARRA DE STATUS ═══ -->
+    <div class="status-bar">
+      <div class="status-item">
+        <div class="status-dot"></div>
+        Motor ativo
+      </div>
+      <div class="status-item">
+        Fatos cadastrados: <span class="status-val" id="sb-facts">0</span>
+      </div>
+      <div class="status-item">
+        Regras: <span class="status-val" id="sb-rules">0</span>
+      </div>
+      <div class="status-item">
+        Última inferência: <span class="status-val" id="sb-last">—</span>
+      </div>
+      <div class="status-item">
+        Conclusões: <span class="status-val" id="sb-conc">0</span>
+      </div>
+    </div>
+
+    <!-- ═══ PÁGINA: DIAGNÓSTICO ═══ -->
+    <section id="page-diagnostico" class="page active">
+      <h2 class="section-title">Diagnóstico por Encadeamento para Frente</h2>
+      <div class="diag-layout">
+
+        <!-- Seleção de fatos -->
+        <div class="card">
+          <h3 class="card-subtitle">① Selecione os fatos observados</h3>
+          <div id="fact-checkboxes"></div>
+          <hr class="divider" />
+          <p class="label-muted">Fatos selecionados:</p>
+          <div class="active-facts" id="active-facts-badges">
+            <span class="muted-text">nenhum selecionado</span>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-primary" id="btn-inferir">▶ Executar Inferência</button>
+            <button class="btn btn-secondary btn-sm" id="btn-limpar">↺ Limpar</button>
+          </div>
+        </div>
+
+        <!-- Resultados -->
+        <div class="card">
+          <h3 class="card-subtitle">② Conclusões obtidas</h3>
+          <div class="result-box" id="results-box">
+            <div class="result-empty">// Execute a inferência para ver os resultados</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ═══ PÁGINA: EXPLICAÇÃO ═══ -->
+    <section id="page-explicacao" class="page">
+      <h2 class="section-title">Motor de Explicação — Cadeia de Inferência</h2>
+      <div class="card" id="explanation-card">
+        <div class="empty-state">
+          <div class="es-icon">🔍</div>
+          Execute um diagnóstico primeiro para ver a explicação do raciocínio.
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ PÁGINA: FATOS ═══ -->
+    <section id="page-fatos" class="page">
+      <h2 class="section-title">Base de Fatos</h2>
+      <div class="page-actions">
+        <span class="muted-text">Fatos disponíveis para inferência</span>
+        <button class="btn btn-primary btn-sm" id="btn-novo-fato">+ Novo Fato</button>
+      </div>
+      <div class="facts-grid" id="facts-grid"></div>
+    </section>
+
+    <!-- ═══ PÁGINA: REGRAS ═══ -->
+    <section id="page-regras" class="page">
+      <h2 class="section-title">Base de Regras</h2>
+      <div class="page-actions">
+        <span class="muted-text">Regras de produção: SE ... ENTÃO ...</span>
+        <button class="btn btn-primary btn-sm" id="btn-nova-regra">+ Nova Regra</button>
+      </div>
+      <div id="rules-list"></div>
+    </section>
+
+  </div><!-- /.app -->
+
+
+  <!-- ═══ MODAL: NOVO FATO ═══ -->
+  <div class="modal-overlay" id="fact-modal" role="dialog" aria-modal="true" aria-labelledby="fact-modal-title">
+    <div class="modal">
+      <h3 id="fact-modal-title">📋 Cadastrar Fato</h3>
+
+      <div class="form-group">
+        <label class="form-label" for="f-key">Chave (identificador único)</label>
+        <input class="form-input" id="f-key" type="text" placeholder="ex: computador_lento" autocomplete="off" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="f-label">Rótulo (exibição)</label>
+        <input class="form-input" id="f-label" type="text" placeholder="ex: Computador está lento" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="f-desc">Descrição</label>
+        <textarea class="form-textarea" id="f-desc" placeholder="Descreva o fato observável..."></textarea>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" id="btn-salvar-fato">Salvar Fato</button>
+        <button class="btn btn-secondary" data-close-modal="fact-modal">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ MODAL: NOVA REGRA ═══ -->
+  <div class="modal-overlay" id="rule-modal" role="dialog" aria-modal="true" aria-labelledby="rule-modal-title">
+    <div class="modal">
+      <h3 id="rule-modal-title">⚙️ Cadastrar Regra</h3>
+
+      <div class="form-group">
+        <label class="form-label" for="r-name">Nome da Regra</label>
+        <input class="form-input" id="r-name" type="text" placeholder="ex: Diagnóstico de Vírus" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Condições (SE) — pressione Enter para adicionar</label>
+        <div class="tags-container" id="r-conds-container">
+          <input class="tags-input" id="r-conds-input" placeholder="chave_do_fato + Enter" autocomplete="off" />
+        </div>
+        <small class="form-hint">Use as chaves dos fatos cadastrados</small>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="r-conclusion">Conclusão (ENTÃO)</label>
+        <input class="form-input" id="r-conclusion" type="text" placeholder="ex: Possível infecção por vírus" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="r-severity">Severidade</label>
+        <select class="form-select" id="r-severity">
+          <option value="baixa">🟢 Baixa</option>
+          <option value="media" selected>🟡 Média</option>
+          <option value="alta">🔴 Alta</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="r-rec">Recomendação</label>
+        <textarea class="form-textarea" id="r-rec" placeholder="O que o usuário deve fazer..."></textarea>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" id="btn-salvar-regra">Salvar Regra</button>
+        <button class="btn btn-secondary" data-close-modal="rule-modal">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ TOAST ═══ -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
