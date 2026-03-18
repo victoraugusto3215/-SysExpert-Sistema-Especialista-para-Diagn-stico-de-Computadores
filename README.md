@@ -130,5 +130,6 @@ Nenhuma biblioteca ou framework externo foi utilizado na lógica principal.
 ---
 
 ## 👤 Autor
+Luiz Felipe, Rafael Soares e Victor Augusto
 
 Trabalho desenvolvido para a disciplina de **Inteligência Artificial**.
